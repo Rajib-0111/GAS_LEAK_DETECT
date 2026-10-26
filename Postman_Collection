@@ -1,0 +1,32 @@
+{
+  "info": {
+    "_postman_id": "f5179336-29f0-40ac-91c7-9bd3c34a26f4",
+    "name": "GAS DETECTION",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "42942074"
+  },
+  "item": [
+    {
+      "name": "Test_Api",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send_Data",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": ""
+        }
+      },
+      "response": []
+    }
+  ]
+}

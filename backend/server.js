@@ -33,7 +33,7 @@ app.post("/app/readings", async (req, res) => {
       !Number.isInteger(gasRaw) ||
       gasRaw < 0 ||
       gasRaw > 4095 ||
-      !["Normal", "Warning"].includes(alertStatus)
+      !["NORMAL", "WARNING"].includes(alertStatus.toUpperCase())
     ) {
       return res.status(400).json({
         success: false,
@@ -43,7 +43,7 @@ app.post("/app/readings", async (req, res) => {
     const reading = await SensorReading.create({
       deviceId: deviceId.trim(),
       gasRaw,
-      alertStatus,
+      alertStatus: alertStatus.toUpperCase(),
     });
     res.status(201).json({
       success: true,
@@ -51,7 +51,7 @@ app.post("/app/readings", async (req, res) => {
       data: reading,
     });
   } catch (err) {
-    console.error("Error saving sensor reading:", error.message);
+    console.error("Error saving sensor reading:", err.message);
     res.status(500).json({
       success: false,
       message: "Failed to save sensor reading",
