@@ -1,0 +1,71 @@
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Instrument+Sans:wght@400..600&display=swap");
+
+:root {
+  --bg: #0e1320;
+  --side: #111726;
+  --panel: #151b2b;
+  --line: #232b40;
+  --text: #e8ebf2;
+  --soft: #8e97ad;
+  --blue: #2f6bff;
+  --green: #34c77b;
+  --red: #ef5350;
+  --grey: #6b7488;
+  --display: "Bricolage Grotesque", system-ui, sans-serif;
+  --body: "Instrument Sans", system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: var(--body);
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell { display: grid; grid-template-columns: 14rem 1fr; min-height: 100%; }
+
+.sidebar { background: var(--side); border-right: 1px solid var(--line); padding: 1.5rem 1rem; }
+.brand { font-family: var(--display); font-weight: 700; font-size: 1.3rem; padding: 0 0.75rem 1.75rem; }
+.nav-item { display: block; padding: 0.6rem 0.75rem; margin-bottom: 0.25rem; border-radius: 6px; color: var(--soft); }
+.nav-item.is-active { background: var(--blue); color: #fff; }
+.nav-item.is-soon { opacity: 0.5; cursor: default; }
+
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 1.15rem 2rem; border-bottom: 1px solid var(--line); }
+.topbar h1 { margin: 0; font-family: var(--display); font-size: 1.3rem; font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 1rem; }
+.device-id { color: var(--soft); font-size: 0.9rem; }
+
+.badge { padding: 0.3rem 0.85rem; border-radius: 999px; font-size: 0.85rem; font-weight: 500; border: 1px solid; }
+.badge-ok { color: var(--green); border-color: rgba(52, 199, 123, 0.45); background: rgba(52, 199, 123, 0.1); }
+.badge-bad { color: var(--red); border-color: rgba(239, 83, 80, 0.5); background: rgba(239, 83, 80, 0.12); }
+.badge-idle { color: var(--soft); border-color: var(--line); }
+
+.content { padding: 2rem; display: grid; gap: 1.25rem; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1rem; }
+.card, .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 1.1rem 1.25rem; }
+.card h2, .panel h2 { margin: 0 0 0.6rem; font-size: 0.9rem; font-weight: 500; color: var(--soft); }
+
+.value { display: flex; align-items: center; gap: 0.55rem; margin: 0; font-family: var(--display); font-size: 2.2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.note { margin: 0.35rem 0 0; font-size: 0.85rem; color: var(--soft); }
+.tone-warning { color: var(--red); }
+
+.dot { width: 0.6rem; height: 0.6rem; border-radius: 50%; background: var(--grey); flex: none; }
+.dot-normal { background: var(--green); }
+.dot-warning { background: var(--red); }
+
+.track { position: relative; height: 8px; max-width: 36rem; margin: 1rem 0 2.6rem; background: var(--line); border-radius: 4px; }
+.fill { position: absolute; inset: 0 auto 0 0; background: var(--green); border-radius: 4px; transition: width 0.6s ease; }
+.mark { position: absolute; top: -6px; bottom: -6px; width: 2px; background: var(--text); }
+.mark-label { position: absolute; top: 18px; transform: translateX(-50%); font-size: 0.85rem; color: var(--soft); white-space: nowrap; }
+
+@media (max-width: 800px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { display: none; }
+  .topbar, .content { padding: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill { transition: none; }
+}

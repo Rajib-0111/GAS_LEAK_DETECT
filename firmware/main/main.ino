@@ -4,7 +4,7 @@
 #define GAS_SENSOR_PIN 34
 #define GREEN_LED_PIN 26
 #define RED_LED_PIN 27
-#define BUZZER_PIN 25
+#define BUZZER_PIN 2
 
 const char* WIFI_SSID = "Rajib";
 const char* WIFI_PASSWORD = "Rajib@173117";
