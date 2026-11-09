@@ -4,7 +4,7 @@
 #define GAS_SENSOR_PIN 34
 #define GREEN_LED_PIN 26
 #define RED_LED_PIN 27
-#define BUZZER_PIN 2
+#define BUZZER_PIN 25
 
 const char* WIFI_SSID = "Rajib";
 const char* WIFI_PASSWORD = "Rajib@173117";
@@ -14,8 +14,8 @@ const char* DEVICE_ID = "gas-node-001";
 const unsigned long SEND_INTERVAL_MS = 10000;  // send every 10 seconds
 
 const int SAMPLES_PER_AVERAGE = 20;  // 20 samples x 100 ms = 2 seconds
-const int ALARM_ON = 150;            // temporary placeholder
-const int ALARM_OFF = 100;           // temporary placeholder
+const int ALARM_ON = 2000;
+const int ALARM_OFF = 1900;
 const int CONFIRM_COUNT = 3;         // 3 averages in a row = about 6 seconds
 
 bool warning = false;
