@@ -39,9 +39,9 @@ export default function App() {
       const saved = localStorage.getItem("theme");
       if (saved === "light" || saved === "dark") return saved;
     } catch {
-      // storage unavailable: fall back to the system setting
+      // storage unavailable: fall back to the default
     }
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    return "light";
   });
 
   useLayoutEffect(() => {
@@ -54,7 +54,6 @@ export default function App() {
     try {
       localStorage.setItem("theme", next);
     } catch {
-      // ignore: the choice just won't be remembered
     }
   }
 
