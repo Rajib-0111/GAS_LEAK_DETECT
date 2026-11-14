@@ -90,7 +90,7 @@ export default function HistoryChart() {
               width={48}
             />
             <Tooltip
-              labelFormatter={(t) => new Date(t).toLocaleString()}
+              labelFormatter={(t) => new Date(t).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
               contentStyle={{
                 background: "var(--panel)",
                 border: "1px solid var(--line)",

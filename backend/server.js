@@ -13,6 +13,8 @@ const app = express();
 const SensorReading = require("./models/SensorReading");
 const { type } = require("node:os");
 
+let snoozeUntil = 0;
+
 function requireDeviceKey(req, res, next) {
   const key = req.get("x-api-key");
   if (!key || key !== process.env.DEVICE_API_KEY) {
@@ -82,6 +84,12 @@ app.get("/app/readings", async (req, res) => {
   }
 });
 
+app.post("/app/device/snooze", (req,res) => {
+  const { minutes } = req.body;
+  snoozeUntil = Date.now() + (minutes * 60 * 1000); 
+  res.json({ success: true, message: `Snoozed for ${minutes} minutes`, snoozeUntil });
+});
+
 app.post("/app/readings", requireDeviceKey, async (req, res) => {
   try {
     const { deviceId, gasRaw, alertStatus } = req.body;
@@ -93,7 +101,7 @@ app.post("/app/readings", requireDeviceKey, async (req, res) => {
       !Number.isInteger(gasRaw) ||
       gasRaw < 0 ||
       typeof alertStatus !== "string" ||
-      !["NORMAL", "WARNING"].includes(alertStatus.toUpperCase())
+      !["NORMAL", "WARNING", "FAULT", "WARMING_UP"].includes(alertStatus.toUpperCase())
     ) {
       return res.status(400).json({
         success: false,
@@ -105,10 +113,12 @@ app.post("/app/readings", requireDeviceKey, async (req, res) => {
       gasRaw,
       alertStatus: alertStatus.toUpperCase(),
     });
+    const isSnoozed = Date.now() < snoozeUntil;
     res.status(201).json({
       success: true,
       message: "Reading Saved",
       data: reading,
+      snooze: isSnoozed, 
     });
   } catch (err) {
     console.error("Error saving sensor reading:", err.message);

@@ -48,10 +48,14 @@ export default function useLatest() {
     : 0;
 
   let status = "loading";
-  if (error) status = "error";
-  else if (reading) {
-    if (seconds > OFFLINE_AFTER_SECONDS) status = "offline";
-    else status = reading.alertStatus === "WARNING" ? "warning" : "normal";
+  if (error) {
+    status = "error";
+  } else if (reading) {
+    if (seconds > OFFLINE_AFTER_SECONDS) {
+      status = "offline";
+    } else {
+      status = reading.alertStatus ? reading.alertStatus.toLowerCase() : "normal";
+    }
   }
 
   return { reading, seconds, status };

@@ -17,7 +17,7 @@ const sensorReadingSchema = new mongoose.Schema({
 
   alertStatus: {
     type: String,
-    enum: ["NORMAL", "WARNING"],
+    enum: ["NORMAL", "WARNING", "FAULT", "WARMING_UP"],
     required: true
   },
 
