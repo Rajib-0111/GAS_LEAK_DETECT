@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
-// Uses whatever address the page was opened from, so it also works on a phone.
-export const API_URL = `http://${window.location.hostname}:3000`;
+export const API_URL = `https://gas-leak-detect.onrender.com`;
 export const DEVICE_ID = "gas-node-001";
 const POLL_MS = 5000;
 const OFFLINE_AFTER_SECONDS = 30;
