@@ -14,8 +14,13 @@ export default function Devices({ status, reading }) {
       const data = await response.json();
       
       if (data.success) {
-        const time = new Date(data.snoozeUntil).toLocaleTimeString();
-        setSnoozeMsg(`Buzzer snoozed until ${time}`);
+        if (minutes === 0){
+          setSnoozeMsg("Buzzer unsnoozed");
+        }
+        else{
+          const time = new Date(data.snoozeUntil).toLocaleTimeString();
+          setSnoozeMsg(`Buzzer snoozed until ${time}`);
+        }
       } else {
         setSnoozeMsg("Failed to snooze.");
       }
@@ -53,6 +58,12 @@ export default function Devices({ status, reading }) {
         </p>
         
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <button 
+            onClick={() => handleSnooze(0)} 
+            style={{ padding: "10px 20px", background: "var(--tone-, #48ad48)", color: "#000", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}
+          >
+            Unsnooze
+          </button>
           <button 
             onClick={() => handleSnooze(1)} 
             style={{ padding: "10px 20px", background: "var(--tone-, #5a5dda)", color: "#000", border: "none", borderRadius: "5px", cursor: "pointer", fontWeight: "bold" }}

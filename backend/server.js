@@ -84,10 +84,22 @@ app.get("/app/readings", async (req, res) => {
   }
 });
 
-app.post("/app/device/snooze", (req,res) => {
+app.post("/app/device/snooze", (req, res) => {
   const { minutes } = req.body;
-  snoozeUntil = Date.now() + (minutes * 60 * 1000); 
-  res.json({ success: true, message: `Snoozed for ${minutes} minutes`, snoozeUntil });
+  if (minutes === 0){
+    snoozeUntil = 0;
+    sendTelegram("🔔 AIRGUARD UPDATE: Alarm unsnoozed manually. Audio alerts are active.");
+  }
+  else{
+    snoozeUntil = Date.now() + minutes * 60 * 1000;
+    sendTelegram(`🔕 AIRGUARD UPDATE: Alarm snoozed for ${minutes} minutes.`);
+  }
+
+  res.json({
+    success: true,
+    message: `Snoozed for ${minutes} minutes`,
+    snoozeUntil,
+  });
 });
 
 app.post("/app/readings", requireDeviceKey, async (req, res) => {
@@ -101,7 +113,9 @@ app.post("/app/readings", requireDeviceKey, async (req, res) => {
       !Number.isInteger(gasRaw) ||
       gasRaw < 0 ||
       typeof alertStatus !== "string" ||
-      !["NORMAL", "WARNING", "FAULT", "WARMING_UP"].includes(alertStatus.toUpperCase())
+      !["NORMAL", "WARNING", "FAULT", "WARMING_UP"].includes(
+        alertStatus.toUpperCase(),
+      )
     ) {
       return res.status(400).json({
         success: false,
@@ -118,7 +132,7 @@ app.post("/app/readings", requireDeviceKey, async (req, res) => {
       success: true,
       message: "Reading Saved",
       data: reading,
-      snooze: isSnoozed, 
+      snooze: isSnoozed,
     });
   } catch (err) {
     console.error("Error saving sensor reading:", err.message);
@@ -257,10 +271,36 @@ async function startServer() {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, "0.0.0.0", () => {
       console.log(`Server Started At ${PORT}`);
+      sendTelegram("✅ AirGuard server started");
     });
   } catch (err) {
     console.error(err.message);
     process.exit(1);
+  }
+}
+
+async function sendTelegram(text) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!token || !chatId) {
+    console.warn("Telegram Not Configured...");
+    return false;
+  }
+  try {
+    const res = await fetch(
+      `https://api.telegram.org/bot${token}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text }),
+      },
+    );
+    if (!res.ok) console.error("Telegram answered", res.status);
+    return res.ok;
+  } catch (err) {
+    console.error("Telegram error:", err.message);
+    return false;
   }
 }
 
