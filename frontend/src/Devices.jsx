@@ -6,6 +6,7 @@ export default function Devices({ status, reading }) {
 
   const handleSnooze = async (minutes) => {
     try {
+      // "http://localhost:3000/app/device/snooze" local host
       const response = await fetch("https://gas-leak-detect.onrender.com/app/device/snooze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

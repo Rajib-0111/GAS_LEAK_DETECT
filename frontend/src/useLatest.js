@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+
+// export const API_URL = `http://${window.location.hostname}:3000`; //localhost
 export const API_URL = `https://gas-leak-detect.onrender.com`;
 export const DEVICE_ID = "gas-node-001";
 const POLL_MS = 5000;

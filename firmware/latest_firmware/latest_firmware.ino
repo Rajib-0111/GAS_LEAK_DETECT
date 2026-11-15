@@ -10,6 +10,7 @@
 
 const char* WIFI_SSID = "Rajib";
 const char* WIFI_PASSWORD = "Rajib@173117";
+// const char* SERVER_URL = "http://10.28.55.222:3000/app/readings"; // local host
 const char* SERVER_URL = "http://10.28.55.222:3000/app/readings";
 const char* API_KEY = "e9bb8f408f4ec40ec035f073d1dca87eb2e7517415bf5857";
 const char* TELEGRAM_TOKEN = "8442624160:AAGpouD2-RrvnPbJrtAdYEFTe99DiVoc6MM";
