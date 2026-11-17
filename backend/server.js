@@ -8,6 +8,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const cors = require("cors");
+const cron = require('node-cron');
+
 const app = express();
 
 const SensorReading = require("./models/SensorReading");
@@ -303,5 +305,30 @@ async function sendTelegram(text) {
     return false;
   }
 }
+
+cron.schedule('* * * * *', async () => {
+  try {
+    const oneDaysAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    
+    const normalResult = await SensorReading.deleteMany({ 
+      timestamp: { $lt: oneDaysAgo },
+      alertStatus: 'NORMAL' 
+    });
+
+    const alertResult = await SensorReading.deleteMany({ 
+      timestamp: { $lt: thirtyDaysAgo } 
+    });
+    
+    console.log(`🧹CRON RAN: Deleted ${normalResult.deletedCount} standard readings and ${alertResult.deletedCount} expired alerts.`);
+    
+  } catch (error) {
+    console.error("Cron Error:", error);
+  }
+}, {
+  scheduled: true,
+  timezone: "Asia/Kolkata"
+});
+
 
 startServer();
