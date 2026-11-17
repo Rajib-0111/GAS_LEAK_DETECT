@@ -8,14 +8,14 @@
 #define RED_LED_PIN 27
 #define BUZZER_PIN 25
 
-const char* WIFI_SSID = "Rajib";
-const char* WIFI_PASSWORD = "Rajib@173117";
-// const char* SERVER_URL = "http://10.28.55.222:3000/app/readings"; // local host
-const char* SERVER_URL = "https://gas-leak-detect.onrender.com/app/readings";
-const char* API_KEY = "e9bb8f408f4ec40ec035f073d1dca87eb2e7517415bf5857";
-const char* TELEGRAM_TOKEN = "8442624160:AAGpouD2-RrvnPbJrtAdYEFTe99DiVoc6MM";
-// const char* TELEGRAM_CHAT_ID = "5340658565"; //personalchat
-const char* TELEGRAM_CHAT_ID = "-1004476845589"; //groupchat
+const char* WIFI_SSID = "YOUR WIFI SSID";
+const char* WIFI_PASSWORD = "YOUR WIFI PASSWORD";
+// const char* SERVER_URL = "YOUR BACKEND URL"; // local host
+const char* SERVER_URL = "YOUR BACKEND URL";
+const char* API_KEY = "YOUR SECURE API KEY";
+const char* TELEGRAM_TOKEN = "YOUR TELEGRAM BOT TOKEN ID";
+// const char* TELEGRAM_CHAT_ID = "YOUR TELEGRAM CHATID"; //personalchat
+const char* TELEGRAM_CHAT_ID = "YOUR TELEGRAM CHATID"; //groupchat
 String pendingTelegramMessage = "";
 bool sendTelegramFlag = false;
 unsigned long lastTelegramTime = 0;
