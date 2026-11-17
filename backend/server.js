@@ -306,7 +306,7 @@ async function sendTelegram(text) {
   }
 }
 
-cron.schedule('* * * * *', async () => {
+cron.schedule('0 2 * * *', async () => {
   try {
     const oneDaysAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
@@ -320,7 +320,7 @@ cron.schedule('* * * * *', async () => {
       timestamp: { $lt: thirtyDaysAgo } 
     });
     
-    console.log(`🧹CRON RAN: Deleted ${normalResult.deletedCount} standard readings and ${alertResult.deletedCount} expired alerts.`);
+    console.log(`DB CLEANED: Deleted ${normalResult.deletedCount} standard readings and ${alertResult.deletedCount} expired alerts.`);
     
   } catch (error) {
     console.error("Cron Error:", error);
