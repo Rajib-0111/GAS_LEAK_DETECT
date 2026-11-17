@@ -3,7 +3,6 @@ import useLatest, { DEVICE_ID } from "./useLatest";
 import Dashboard from "./Dashboard";
 import Alerts from "./Alerts";
 import Devices from "./Devices";
-import Settings from "./Settings";
 
 const APP_NAME = "AirGuard";
 
@@ -11,7 +10,6 @@ const NAV = [
   { label: "Dashboard", page: "dashboard" },
   { label: "Devices", page: "devices" },
   { label: "Alerts", page: "alerts" },
-  { label: "Settings", page: "settings" },
 ];
 
 const BADGE = {
@@ -35,6 +33,9 @@ const pageFromHash = () => {
 export default function App() {
   const latest = useLatest();
   const badge = BADGE[latest.status] || BADGE.offline;
+
+  const safeStatus = latest.status?.toLowerCase() || "offline";
+  const isOffline = !["normal", "warning", "fault", "warming_up"].includes(safeStatus);
 
   const [page, setPage] = useState(pageFromHash);
 
@@ -147,9 +148,8 @@ export default function App() {
         </header>
         {page === "alerts" && <Alerts />}
         {page === "devices" && (
-          <Devices status={latest.status} reading={latest.reading} />
+          <Devices status={latest.status} reading={latest.reading} isOffline={isOffline} />
         )}
-        {page === "settings" && <Settings />}
         {page === "dashboard" && <Dashboard {...latest} />}
       </div>
     </div>

@@ -86,6 +86,33 @@ body {
   min-height: 100%;
 }
 
+.theme-snooze-btn {
+  flex: 1; 
+  white-space: nowrap;
+  padding: 10px 20px;
+  background-color: #e2e8f0; 
+  color: #1e293b;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.15s ease;
+}
+
+.theme-snooze-btn:hover {
+  background-color: #c8cdd3;
+}
+
+.theme-snooze-btn:active {
+  transform: scale(0.95);
+}
+
+@media (max-width: 600px) {
+  .theme-snooze-btn {
+    flex: 1 1 calc(50% - 10px);
+  }
+}
+
 /* --- SIDEBAR --- */
 .sidebar {
   background: var(--side);
@@ -633,4 +660,20 @@ tr:last-child td {
     font-size: 0.85rem;
     text-transform: uppercase;
   }
+}
+
+:root[data-theme="dark"] .theme-snooze-btn {
+  background-color: #2a2f45; 
+  color: #e2e8f0;
+  border-color: #3b4261;
+}
+
+:root[data-theme="dark"] .theme-snooze-btn:hover {
+  background-color: #373e5a;
+}
+
+.theme-snooze-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }

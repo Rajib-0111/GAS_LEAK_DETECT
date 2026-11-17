@@ -35,6 +35,7 @@ const DEVICE_PILL = {
 
 const pct = (value) => `${Math.min(100, (value / SCALE_MAX) * 100)}%`;
 
+
 export default function Dashboard({ reading, seconds, status }) {
   const level = reading ? reading.gasRaw : null;
   
