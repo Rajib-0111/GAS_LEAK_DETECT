@@ -75,7 +75,17 @@ export default function App() {
   return (
     <div className="shell">
       <aside className="sidebar">
-        <div className="brand">{APP_NAME}</div>
+        <div
+          className="brand"
+          style={{ display: "flex", alignItems: "center", gap: "10px" }}
+        >
+          <img
+            src="favicon.svg"
+            alt="Logo"
+            style={{ width: "24px", height: "24px" }}
+          />
+          {APP_NAME}
+        </div>
         <nav>
           {NAV.map((item) =>
             item.page ? (
