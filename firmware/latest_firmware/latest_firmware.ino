@@ -22,14 +22,14 @@ unsigned long lastTelegramTime = 0;
 const unsigned long TELEGRAM_COOLDOWN = 30000;
 const char* DEVICE_ID = "gas-node-001";
 
-// ---- Timing ----
-const unsigned long SEND_INTERVAL_MS = 10000;  // heartbeat every 10 s
-// const unsigned long WARMUP_MS = 10UL * 60UL * 1000UL;       // use 60000 (1 min) only while testing the code
-const unsigned long WARMUP_MS = 10000;
+// ---- Timings ----
+const unsigned long SEND_INTERVAL_MS = 10000;  // send data every 10 s
+// const unsigned long WARMUP_MS = 10UL * 60UL * 1000UL;       // original warmup time
+const unsigned long WARMUP_MS = 10000; //demo warmup time
 const int SAMPLES_PER_AVERAGE = 20;  // 20 samples x 100 ms = 2 seconds
 const int CONFIRM_COUNT = 3;         // 3 averages in a row = about 6 seconds
 
-// ---- Alarm levels (raw ADC counts). All are PROPOSALS, not calibrated gas levels ----
+
 const int TRIGGER_RISE = 400;  // alarm on when this far above the baseline
 const int CLEAR_RISE = 150;    // alarm off when back within this of the baseline
 const int CEILING = 1600;      // alarm whatever the baseline says (backstop for slow leaks)
@@ -52,7 +52,7 @@ long total = 0;
 int sampleCount = 0;
 float baseline = 0.0;
 
-int recent[30];  // the last 30 averages (about 1 minute)
+int recent[30];  
 int recentIndex = 0;
 int recentCount = 0;
 
@@ -244,7 +244,7 @@ void updateOutputs() {
   } else if (!warmedUp) {
     green = ((now / 500) % 2) == 0;  // slow green blink = warming up
   } else if (baselineFault) {
-    red = ((now / 250) % 2) == 0;  // fast red blink = sensor fault, not an alarm
+    red = ((now / 250) % 2) == 0;  // fast red blink = sensor fault
   } else {
     green = true;
   }
