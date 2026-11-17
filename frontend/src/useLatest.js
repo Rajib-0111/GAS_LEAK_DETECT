@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 // export const API_URL = `http://${window.location.hostname}:3000`; //localhost
 export const API_URL = `https://gas-leak-detect.onrender.com`;
 export const DEVICE_ID = "gas-node-001";
@@ -24,7 +23,7 @@ export default function useLatest() {
     async function load() {
       try {
         const res = await fetch(
-          `${API_URL}/app/readings/latest?deviceId=${DEVICE_ID}`
+          `${API_URL}/app/readings/latest?deviceId=${DEVICE_ID}`,
         );
         if (!res.ok) throw new Error(`Server answered ${res.status}`);
         const json = await res.json();
@@ -45,7 +44,10 @@ export default function useLatest() {
   }, []);
 
   const seconds = reading
-    ? Math.max(0, Math.round((now - new Date(reading.timestamp).getTime()) / 1000))
+    ? Math.max(
+        0,
+        Math.round((now - new Date(reading.timestamp).getTime()) / 1000),
+      )
     : 0;
 
   let status = "loading";
@@ -55,7 +57,9 @@ export default function useLatest() {
     if (seconds > OFFLINE_AFTER_SECONDS) {
       status = "offline";
     } else {
-      status = reading.alertStatus ? reading.alertStatus.toLowerCase() : "normal";
+      status = reading.alertStatus
+        ? reading.alertStatus.toLowerCase()
+        : "normal";
     }
   }
 

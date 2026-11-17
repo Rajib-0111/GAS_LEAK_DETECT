@@ -12,7 +12,7 @@ import {
 import { API_URL, DEVICE_ID } from "./useLatest";
 import { ALARM_ON } from "./Config";
 
-const RANGES = [1, 6, 24]; // hours; must match the server
+const RANGES = [1, 6, 24]; // hours;
 const POLL_MS = 10000;
 
 const clock = (ms) =>
@@ -30,7 +30,7 @@ export default function HistoryChart() {
     async function load() {
       try {
         const res = await fetch(
-          `${API_URL}/app/readings/range?deviceId=${DEVICE_ID}&hours=${hours}`
+          `${API_URL}/app/readings/range?deviceId=${DEVICE_ID}&hours=${hours}`,
         );
         if (!res.ok) throw new Error(`Server answered ${res.status}`);
         const json = await res.json();
@@ -64,12 +64,19 @@ export default function HistoryChart() {
   } else if (!chart) {
     body = <p className="empty">Loading readings.</p>;
   } else if (chart.points.length === 0) {
-    body = <p className="empty">No readings in the last {label}. Power the device to see data here.</p>;
+    body = (
+      <p className="empty">
+        No readings in the last {label}. Power the device to see data here.
+      </p>
+    );
   } else {
     body = (
       <div className="chart">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={chart.points} margin={{ top: 8, right: 12, bottom: 0, left: -12 }}>
+          <LineChart
+            data={chart.points}
+            margin={{ top: 8, right: 12, bottom: 0, left: -12 }}
+          >
             <CartesianGrid stroke="var(--line)" vertical={false} />
             <XAxis
               dataKey="t"
@@ -82,7 +89,10 @@ export default function HistoryChart() {
               tickLine={false}
             />
             <YAxis
-              domain={[0, (max) => Math.max(200, Math.ceil(max / 50) * 50 + 50)]}
+              domain={[
+                0,
+                (max) => Math.max(200, Math.ceil(max / 50) * 50 + 50),
+              ]}
               stroke="var(--line)"
               tick={{ fontSize: 12, fill: "var(--soft)" }}
               tickLine={false}
@@ -90,7 +100,16 @@ export default function HistoryChart() {
               width={48}
             />
             <Tooltip
-              labelFormatter={(t) => new Date(t).toLocaleString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}
+              labelFormatter={(t) =>
+                new Date(t).toLocaleString("en-GB", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              }
               contentStyle={{
                 background: "var(--panel)",
                 border: "1px solid var(--line)",
@@ -103,7 +122,12 @@ export default function HistoryChart() {
               y={ALARM_ON}
               stroke="var(--red)"
               strokeDasharray="4 4"
-              label={{ value: "alarm", fill: "var(--soft)", fontSize: 12, position: "insideTopRight" }}
+              label={{
+                value: "alarm",
+                fill: "var(--soft)",
+                fontSize: 12,
+                position: "insideTopRight",
+              }}
             />
             {chart.bucketSeconds > 0 && (
               <Line

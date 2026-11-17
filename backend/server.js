@@ -8,7 +8,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 
 const cors = require("cors");
-const cron = require('node-cron');
+const cron = require("node-cron");
 
 const app = express();
 
@@ -88,11 +88,12 @@ app.get("/app/readings", async (req, res) => {
 
 app.post("/app/device/snooze", (req, res) => {
   const { minutes } = req.body;
-  if (minutes === 0){
+  if (minutes === 0) {
     snoozeUntil = 0;
-    sendTelegram("🔔 AIRGUARD UPDATE: Alarm unsnoozed manually. Audio alerts are active.");
-  }
-  else{
+    sendTelegram(
+      "🔔 AIRGUARD UPDATE: Alarm unsnoozed manually. Audio alerts are active.",
+    );
+  } else {
     snoozeUntil = Date.now() + minutes * 60 * 1000;
     sendTelegram(`🔕 AIRGUARD UPDATE: Alarm snoozed for ${minutes} minutes.`);
   }
@@ -146,9 +147,9 @@ app.post("/app/readings", requireDeviceKey, async (req, res) => {
 });
 
 const RANGES = {
-  1: 0, // raw readings
-  6: 60 * 1000, // 1-minute buckets
-  24: 5 * 60 * 1000, // 5-minute buckets
+  1: 0,
+  6: 60 * 1000,
+  24: 5 * 60 * 1000,
 };
 
 app.get("/app/readings/range", async (req, res) => {
@@ -306,29 +307,33 @@ async function sendTelegram(text) {
   }
 }
 
-cron.schedule('0 2 * * *', async () => {
-  try {
-    const oneDaysAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
-    
-    const normalResult = await SensorReading.deleteMany({ 
-      timestamp: { $lt: oneDaysAgo },
-      alertStatus: 'NORMAL' 
-    });
+cron.schedule(
+  "0 2 * * *",
+  async () => {
+    try {
+      const oneDaysAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-    const alertResult = await SensorReading.deleteMany({ 
-      timestamp: { $lt: thirtyDaysAgo } 
-    });
-    
-    console.log(`DB CLEANED: Deleted ${normalResult.deletedCount} standard readings and ${alertResult.deletedCount} expired alerts.`);
-    
-  } catch (error) {
-    console.error("Cron Error:", error);
-  }
-}, {
-  scheduled: true,
-  timezone: "Asia/Kolkata"
-});
+      const normalResult = await SensorReading.deleteMany({
+        timestamp: { $lt: oneDaysAgo },
+        alertStatus: "NORMAL",
+      });
 
+      const alertResult = await SensorReading.deleteMany({
+        timestamp: { $lt: thirtyDaysAgo },
+      });
+
+      console.log(
+        `DB CLEANED: Deleted ${normalResult.deletedCount} standard readings and ${alertResult.deletedCount} expired alerts.`,
+      );
+    } catch (error) {
+      console.error("Cron Error:", error);
+    }
+  },
+  {
+    scheduled: true,
+    timezone: "Asia/Kolkata",
+  },
+);
 
 startServer();

@@ -35,7 +35,9 @@ export default function App() {
   const badge = BADGE[latest.status] || BADGE.offline;
 
   const safeStatus = latest.status?.toLowerCase() || "offline";
-  const isOffline = !["normal", "warning", "fault", "warming_up"].includes(safeStatus);
+  const isOffline = !["normal", "warning", "fault", "warming_up"].includes(
+    safeStatus,
+  );
 
   const [page, setPage] = useState(pageFromHash);
 
@@ -148,7 +150,11 @@ export default function App() {
         </header>
         {page === "alerts" && <Alerts />}
         {page === "devices" && (
-          <Devices status={latest.status} reading={latest.reading} isOffline={isOffline} />
+          <Devices
+            status={latest.status}
+            reading={latest.reading}
+            isOffline={isOffline}
+          />
         )}
         {page === "dashboard" && <Dashboard {...latest} />}
       </div>

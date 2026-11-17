@@ -15,19 +15,18 @@ const STATUS_TEXT = {
 const STATUS_NOTE = {
   normal: "Below the alarm level",
   warning: "The device alarm is on",
-  fault: "Baseline out of bounds", 
+  fault: "Baseline out of bounds",
   warming_up: "Calibrating sensor",
   offline: "Waiting for the device",
   error: "Backend not reachable",
   loading: "Waiting for data",
 };
 
-
 const DEVICE_PILL = {
   normal: { text: "Online", tone: "ok" },
   warning: { text: "Alarm", tone: "bad" },
   fault: { text: "Fault", tone: "warn" },
-  warming_up: { text: "Warming up", tone: "warming_up" }, 
+  warming_up: { text: "Warming up", tone: "warming_up" },
   offline: { text: "Offline", tone: "idle" },
   error: { text: "Unknown", tone: "idle" },
   loading: { text: "Connecting", tone: "idle" },
@@ -35,14 +34,14 @@ const DEVICE_PILL = {
 
 const pct = (value) => `${Math.min(100, (value / SCALE_MAX) * 100)}%`;
 
-
 export default function Dashboard({ reading, seconds, status }) {
   const level = reading ? reading.gasRaw : null;
-  
-  
+
   const safeStatus = status?.toLowerCase() || "offline";
-  const online = ["normal", "warning", "fault", "warming_up"].includes(safeStatus);
-  
+  const online = ["normal", "warning", "fault", "warming_up"].includes(
+    safeStatus,
+  );
+
   const pill = DEVICE_PILL[safeStatus] || DEVICE_PILL.error;
 
   return (
@@ -58,7 +57,6 @@ export default function Dashboard({ reading, seconds, status }) {
           <h2>Status</h2>
           <p className="value">
             <span className={`dot dot-${pill.tone}`} />
-            {/* 4. CHANGED: Now using safeStatus to guarantee a match */}
             {STATUS_TEXT[safeStatus]}
           </p>
           <p className="note">{STATUS_NOTE[safeStatus]}</p>

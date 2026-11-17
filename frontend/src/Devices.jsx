@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { DEVICE_ID } from "./useLatest";
 
-
 export default function Devices({ status, reading, isOffline }) {
   const [snoozeMsg, setSnoozeMsg] = useState("");
 
@@ -34,8 +33,8 @@ export default function Devices({ status, reading, isOffline }) {
     }
   };
 
-  const displayMsg = isOffline 
-    ? "⚠️Hardware is disconnected. Commands cannot be sent." 
+  const displayMsg = isOffline
+    ? "⚠️Hardware is disconnected. Commands cannot be sent."
     : snoozeMsg;
 
   return (
@@ -73,22 +72,39 @@ export default function Devices({ status, reading, isOffline }) {
             alignItems: "center",
           }}
         >
-          <button onClick={() => handleSnooze(0)} className="theme-snooze-btn" disabled={isOffline}>
+          <button
+            onClick={() => handleSnooze(0)}
+            className="theme-snooze-btn"
+            disabled={isOffline}
+          >
             Unsnooze
           </button>
 
-          <button onClick={() => handleSnooze(1)} className="theme-snooze-btn" disabled={isOffline}>
+          <button
+            onClick={() => handleSnooze(1)}
+            className="theme-snooze-btn"
+            disabled={isOffline}
+          >
             Snooze 1 Min
           </button>
 
-          <button onClick={() => handleSnooze(5)} className="theme-snooze-btn" disabled={isOffline}>
+          <button
+            onClick={() => handleSnooze(5)}
+            className="theme-snooze-btn"
+            disabled={isOffline}
+          >
             Snooze 5 Min
           </button>
 
-          <button onClick={() => handleSnooze(15)} className="theme-snooze-btn" disabled={isOffline}>
+          <button
+            onClick={() => handleSnooze(15)}
+            className="theme-snooze-btn"
+            disabled={isOffline}
+          >
             Snooze 15 Min
           </button>
-            {displayMsg && (<span
+          {displayMsg && (
+            <span
               style={{
                 flex: "1 1 100%",
                 marginTop: "5px",
@@ -96,7 +112,8 @@ export default function Devices({ status, reading, isOffline }) {
               }}
             >
               {displayMsg}
-            </span>)}
+            </span>
+          )}
         </div>
       </section>
     </main>

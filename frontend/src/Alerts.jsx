@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { API_URL, DEVICE_ID } from "./useLatest";
 
-const RANGES = [1, 7, 30]; // days; must match the server
+const RANGES = [1, 7, 30];
 const POLL_MS = 15000;
 
 function duration(ms) {
@@ -9,7 +9,8 @@ function duration(ms) {
   if (total < 60) return `${total} seconds`;
   const minutes = Math.floor(total / 60);
   const seconds = total % 60;
-  if (minutes < 60) return seconds ? `${minutes} min ${seconds} s` : `${minutes} min`;
+  if (minutes < 60)
+    return seconds ? `${minutes} min ${seconds} s` : `${minutes} min`;
   return `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
 }
 
@@ -28,7 +29,7 @@ export default function Alerts() {
     async function load() {
       try {
         const res = await fetch(
-          `${API_URL}/app/alerts?deviceId=${DEVICE_ID}&days=${days}`
+          `${API_URL}/app/alerts?deviceId=${DEVICE_ID}&days=${days}`,
         );
         if (!res.ok) throw new Error(`Server answered ${res.status}`);
         const json = await res.json();
@@ -56,13 +57,18 @@ export default function Alerts() {
   } else if (!result) {
     body = <p className="empty">Loading alerts.</p>;
   } else if (result.count === 0) {
-    body = <p className="empty">No alerts in the last {label}. Warnings from the device will be listed here.</p>;
+    body = (
+      <p className="empty">
+        No alerts in the last {label}. Warnings from the device will be listed
+        here.
+      </p>
+    );
   } else {
     body = (
       <>
         <p className="summary">
-          {result.count} alert{result.count === 1 ? "" : "s"} in the last {label}.
-          Only alarms that reached the server are listed.
+          {result.count} alert{result.count === 1 ? "" : "s"} in the last{" "}
+          {label}. Only alarms that reached the server are listed.
         </p>
         <div className="table-wrap">
           <table>
@@ -78,10 +84,16 @@ export default function Alerts() {
               {result.data.map((e) => (
                 <tr key={e.start}>
                   <td data-label="Started">{when(e.start)}</td>
-                  <td data-label="Lasted">{e.readings === 1 ? "One reading" : duration(e.end - e.start)}</td>
+                  <td data-label="Lasted">
+                    {e.readings === 1
+                      ? "One reading"
+                      : duration(e.end - e.start)}
+                  </td>
                   <td data-label="Peak level">{e.peak}</td>
                   <td data-label="Status">
-                    <span className={`badge badge-${e.ongoing ? "bad" : "idle"}`}>
+                    <span
+                      className={`badge badge-${e.ongoing ? "bad" : "idle"}`}
+                    >
                       {e.ongoing ? "Ongoing" : "Ended"}
                     </span>
                   </td>
