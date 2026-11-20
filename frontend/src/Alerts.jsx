@@ -31,7 +31,7 @@ export default function Alerts() {
         const res = await fetch(
           `${API_URL}/app/alerts?deviceId=${DEVICE_ID}&days=${days}`,
         );
-        if (!res.ok) throw new Error(`Server answered ${res.status}`);
+        if (!res.ok) throw new Error(`Server answered ${res.status}.`);
         const json = await res.json();
         if (cancelled) return;
         setResult(json);
@@ -53,20 +53,38 @@ export default function Alerts() {
 
   let body;
   if (error) {
-    body = <p className="empty">Can't load alerts. {error}</p>;
+    body = (
+      <div className="state-box is-error" role="alert">
+        <span className="state-title body-4">Unable to load alerts</span>
+        <p className="body-6">
+          {error} Verify that the backend service is running and try again.
+        </p>
+      </div>
+    );
   } else if (!result) {
-    body = <p className="empty">Loading alerts.</p>;
+    body = (
+      <div className="skeleton-rows" aria-label="Loading alerts">
+        <div className="skeleton skeleton-row" />
+        <div className="skeleton skeleton-row" />
+        <div className="skeleton skeleton-row" />
+      </div>
+    );
   } else if (result.count === 0) {
     body = (
-      <p className="empty">
-        No alerts in the last {label}. Warnings from the device will be listed
-        here.
-      </p>
+      <div className="state-box">
+        <span className="state-title body-4">
+          No alerts in the last {label}
+        </span>
+        <p className="body-6">
+          Air quality remained within safe thresholds. Any warnings sent by the
+          device will appear here.
+        </p>
+      </div>
     );
   } else {
     body = (
       <>
-        <p className="summary">
+        <p className="summary body-6">
           {result.count} alert{result.count === 1 ? "" : "s"} in the last{" "}
           {label}. Only alarms that reached the server are listed.
         </p>
@@ -74,25 +92,29 @@ export default function Alerts() {
           <table>
             <thead>
               <tr>
-                <th>Started</th>
-                <th>Lasted</th>
-                <th>Peak level</th>
-                <th>Status</th>
+                <th className="caption-3">Started</th>
+                <th className="caption-3">Lasted</th>
+                <th className="caption-3">Peak level</th>
+                <th className="caption-3">Status</th>
               </tr>
             </thead>
             <tbody>
               {result.data.map((e) => (
                 <tr key={e.start}>
-                  <td data-label="Started">{when(e.start)}</td>
-                  <td data-label="Lasted">
+                  <td data-label="Started" className="body-6 mono">
+                    {when(e.start)}
+                  </td>
+                  <td data-label="Lasted" className="body-6 mono">
                     {e.readings === 1
                       ? "One reading"
                       : duration(e.end - e.start)}
                   </td>
-                  <td data-label="Peak level">{e.peak}</td>
+                  <td data-label="Peak level" className="body-5 mono">
+                    {e.peak}
+                  </td>
                   <td data-label="Status">
                     <span
-                      className={`badge badge-${e.ongoing ? "bad" : "idle"}`}
+                      className={`badge caption-3 badge-${e.ongoing ? "bad" : "idle"}`}
                     >
                       {e.ongoing ? "Ongoing" : "Ended"}
                     </span>
@@ -107,16 +129,16 @@ export default function Alerts() {
   }
 
   return (
-    <main className="content">
+    <main id="main-content" className="content">
       <section className="panel">
         <div className="panel-head">
-          <h2>Alert history</h2>
+          <h2 className="title-2">Alert history</h2>
           <div className="range" role="group" aria-label="Time range">
             {RANGES.map((d) => (
               <button
                 key={d}
                 type="button"
-                className={d === days ? "is-on" : ""}
+                className={`button-xsm${d === days ? " is-on" : ""}`}
                 aria-pressed={d === days}
                 onClick={() => setDays(d)}
               >

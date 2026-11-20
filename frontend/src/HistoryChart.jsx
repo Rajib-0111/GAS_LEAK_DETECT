@@ -12,7 +12,7 @@ import {
 import { API_URL, DEVICE_ID } from "./useLatest";
 import { ALARM_ON } from "./Config";
 
-const RANGES = [1, 6, 24]; // hours;
+const RANGES = [1, 6, 24];
 const POLL_MS = 10000;
 
 const clock = (ms) =>
@@ -32,7 +32,7 @@ export default function HistoryChart() {
         const res = await fetch(
           `${API_URL}/app/readings/range?deviceId=${DEVICE_ID}&hours=${hours}`,
         );
-        if (!res.ok) throw new Error(`Server answered ${res.status}`);
+        if (!res.ok) throw new Error(`Server answered ${res.status}.`);
         const json = await res.json();
         if (cancelled) return;
         const to = Date.now();
@@ -60,14 +60,30 @@ export default function HistoryChart() {
 
   let body;
   if (error) {
-    body = <p className="empty">Can't load the history. {error}</p>;
+    body = (
+      <div className="state-box is-error" role="alert">
+        <span className="state-title body-4">Unable to load history</span>
+        <p className="body-6">
+          {error} Check your network connection or try a different time range.
+        </p>
+      </div>
+    );
   } else if (!chart) {
-    body = <p className="empty">Loading readings.</p>;
+    body = (
+      <div
+        className="skeleton skeleton-chart"
+        aria-label="Loading chart data"
+      />
+    );
   } else if (chart.points.length === 0) {
     body = (
-      <p className="empty">
-        No readings in the last {label}. Power the device to see data here.
-      </p>
+      <div className="state-box">
+        <span className="state-title body-4">No readings recorded</span>
+        <p className="body-6">
+          No readings in the last {label}. Power the sensor node to begin
+          logging live air quality data.
+        </p>
+      </div>
     );
   } else {
     body = (
@@ -85,7 +101,11 @@ export default function HistoryChart() {
               domain={[chart.from, chart.to]}
               tickFormatter={clock}
               stroke="var(--line)"
-              tick={{ fontSize: 12, fill: "var(--soft)" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--soft)",
+                fontFamily: "var(--font-mono)",
+              }}
               tickLine={false}
             />
             <YAxis
@@ -94,7 +114,11 @@ export default function HistoryChart() {
                 (max) => Math.max(200, Math.ceil(max / 50) * 50 + 50),
               ]}
               stroke="var(--line)"
-              tick={{ fontSize: 12, fill: "var(--soft)" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--soft)",
+                fontFamily: "var(--font-mono)",
+              }}
               tickLine={false}
               axisLine={false}
               width={48}
@@ -111,9 +135,11 @@ export default function HistoryChart() {
                 })
               }
               contentStyle={{
-                background: "var(--panel)",
+                background: "var(--surface)",
                 border: "1px solid var(--line)",
                 borderRadius: 8,
+                fontFamily: "var(--font-mono)",
+                fontSize: 12,
               }}
               labelStyle={{ color: "var(--soft)" }}
               itemStyle={{ color: "var(--text)" }}
@@ -123,7 +149,7 @@ export default function HistoryChart() {
               stroke="var(--red)"
               strokeDasharray="4 4"
               label={{
-                value: "alarm",
+                value: "Alarm",
                 fill: "var(--soft)",
                 fontSize: 12,
                 position: "insideTopRight",
@@ -159,13 +185,13 @@ export default function HistoryChart() {
   return (
     <section className="panel">
       <div className="panel-head">
-        <h2>Sensor level, last {label}</h2>
+        <h2 className="title-2">Sensor level, last {label}</h2>
         <div className="range" role="group" aria-label="Time range">
           {RANGES.map((h) => (
             <button
               key={h}
               type="button"
-              className={h === hours ? "is-on" : ""}
+              className={`button-xsm${h === hours ? " is-on" : ""}`}
               aria-pressed={h === hours}
               onClick={() => setHours(h)}
             >

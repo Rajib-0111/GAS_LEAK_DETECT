@@ -1,120 +1,119 @@
 import { useState } from "react";
-import { DEVICE_ID } from "./useLatest";
+import { API_URL, DEVICE_ID } from "./useLatest";
 
-export default function Devices({ status, reading, isOffline }) {
+export default function Devices({ isOffline }) {
   const [snoozeMsg, setSnoozeMsg] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [busy, setBusy] = useState(false);
 
   const handleSnooze = async (minutes) => {
+    setBusy(true);
+    setIsError(false);
     try {
-      // "http://localhost:3000/app/device/snooze" local host
-      const response = await fetch(
-        "https://gas-leak-detect.onrender.com/app/device/snooze",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ minutes }),
-        },
-      );
+      const response = await fetch(`${API_URL}/app/device/snooze`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ minutes }),
+      });
       const data = await response.json();
 
       if (data.success) {
         if (minutes === 0) {
-          setSnoozeMsg("Buzzer unsnoozed");
+          setSnoozeMsg("Buzzer unsnoozed.");
         } else {
           const time = new Date(data.snoozeUntil).toLocaleTimeString();
-          setSnoozeMsg(`Buzzer snoozed until ${time}`);
+          setSnoozeMsg(`Buzzer snoozed until ${time}.`);
         }
       } else {
-        setSnoozeMsg("Failed to snooze.");
+        setIsError(true);
+        setSnoozeMsg("Snooze failed. The server rejected the command.");
       }
-    } catch (error) {
-      console.error("Error snoozing device:", error);
+    } catch {
+      setIsError(true);
       setSnoozeMsg("Network error. Backend unreachable.");
+    } finally {
+      setBusy(false);
     }
   };
 
   const displayMsg = isOffline
-    ? "⚠️Hardware is disconnected. Commands cannot be sent."
+    ? "Hardware is disconnected. Commands cannot be sent until the device reconnects."
     : snoozeMsg;
 
   return (
-    <main className="content">
-      <section className="panel" style={{ marginBottom: "20px" }}>
-        <h2>Device Management</h2>
-        <div className="cards" style={{ marginTop: "15px" }}>
+    <main id="main-content" className="content">
+      <section className="panel">
+        <h2 className="title-2">Device management</h2>
+        <div className="cards">
           <article className="card">
-            <h2>Device ID</h2>
-            <p className="value tone-ok">{DEVICE_ID}</p>
+            <h2 className="title-4">Device ID</h2>
+            <p className="value heading-5 mono tone-ok">{DEVICE_ID}</p>
           </article>
           <article className="card">
-            <h2>Sensor</h2>
-            <p className="value tone-idle">MQ-2 (SnO2)</p>
+            <h2 className="title-4">Sensor</h2>
+            <p className="value heading-5 tone-idle">MQ2 (SnO2)</p>
           </article>
           <article className="card">
-            <h2>Firmware</h2>
-            <p className="value tone-idle">BETA</p>
+            <h2 className="title-4">Firmware</h2>
+            <p className="value heading-5 tone-idle">Beta</p>
           </article>
         </div>
       </section>
+
       <section className="panel">
-        <h2>Alarm Controls</h2>
-        <p className="note" style={{ marginBottom: "15px" }}>
+        <h2 className="title-2">Alarm controls</h2>
+        <p className="body-6 note">
           Temporarily mute the physical hardware buzzer. The dashboard will
-          still display the WARNING state. If the gas is not cleared before the
-          timer expires, the buzzer will automatically resume.
+          still display the warning state. If gas levels do not clear before the
+          timer expires, the buzzer will resume automatically.
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "10px",
-            alignItems: "center",
-          }}
-        >
+        <div className="control-row">
           <button
+            type="button"
             onClick={() => handleSnooze(0)}
-            className="theme-snooze-btn"
-            disabled={isOffline}
+            className="btn-primary button-md"
+            disabled={isOffline || busy}
           >
             Unsnooze
           </button>
 
           <button
+            type="button"
             onClick={() => handleSnooze(1)}
-            className="theme-snooze-btn"
-            disabled={isOffline}
+            className="btn-secondary button-md"
+            disabled={isOffline || busy}
           >
-            Snooze 1 Min
+            Snooze 1 min
           </button>
 
           <button
+            type="button"
             onClick={() => handleSnooze(5)}
-            className="theme-snooze-btn"
-            disabled={isOffline}
+            className="btn-secondary button-md"
+            disabled={isOffline || busy}
           >
-            Snooze 5 Min
+            Snooze 5 min
           </button>
 
           <button
+            type="button"
             onClick={() => handleSnooze(15)}
-            className="theme-snooze-btn"
-            disabled={isOffline}
+            className="btn-secondary button-md"
+            disabled={isOffline || busy}
           >
-            Snooze 15 Min
+            Snooze 15 min
           </button>
-          {displayMsg && (
-            <span
-              style={{
-                flex: "1 1 100%",
-                marginTop: "5px",
-                color: "var(--text-muted)",
-              }}
-            >
-              {displayMsg}
-            </span>
-          )}
         </div>
+
+        {displayMsg && (
+          <p
+            className={`status-feedback caption-2${isOffline || isError ? " is-error" : ""}`}
+            role="status"
+          >
+            {displayMsg}
+          </p>
+        )}
       </section>
     </main>
   );

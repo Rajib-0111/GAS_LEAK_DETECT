@@ -13,20 +13,19 @@ const NAV = [
 ];
 
 const BADGE = {
-  normal: { text: "SYSTEM SAFE", tone: "ok" },
-  warning: { text: "WARNING", tone: "bad" },
-  fault: { text: "SENSOR FAULT", tone: "warn" },
-  warming_up: { text: "WARMING UP", tone: "warming_up" },
-  offline: { text: "NO SIGNAL", tone: "idle" },
-  error: { text: "SERVER UNREACHABLE", tone: "idle" },
-  loading: { text: "CONNECTING", tone: "idle" },
+  normal: { text: "System safe", tone: "ok" },
+  warning: { text: "Warning", tone: "bad" },
+  fault: { text: "Sensor fault", tone: "warn" },
+  warming_up: { text: "Warming up", tone: "warming_up" },
+  offline: { text: "No signal", tone: "idle" },
+  error: { text: "Server unreachable", tone: "idle" },
+  loading: { text: "Connecting", tone: "idle" },
 };
 
 const pageFromHash = () => {
   const hash = window.location.hash;
   if (hash === "#alerts") return "alerts";
   if (hash === "#devices") return "devices";
-  if (hash === "#settings") return "settings";
   return "dashboard";
 };
 
@@ -40,9 +39,13 @@ export default function App() {
   );
 
   const [page, setPage] = useState(pageFromHash);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    const onHashChange = () => setPage(pageFromHash());
+    const onHashChange = () => {
+      setPage(pageFromHash());
+      setMenuOpen(false);
+    };
     window.addEventListener("hashchange", onHashChange);
     return () => window.removeEventListener("hashchange", onHashChange);
   }, []);
@@ -52,9 +55,9 @@ export default function App() {
       const saved = localStorage.getItem("theme");
       if (saved === "light" || saved === "dark") return saved;
     } catch {
-      // storage unavailable: fall back to the default
+      // Storage unavailable
     }
-    return "light";
+    return "dark";
   });
 
   useLayoutEffect(() => {
@@ -66,98 +69,132 @@ export default function App() {
     setTheme(next);
     try {
       localStorage.setItem("theme", next);
-    } catch {}
+    } catch {
+      // Storage unavailable
+    }
   }
 
-  // Capitalize the first letter of the page for the topbar title
   const pageTitle = page.charAt(0).toUpperCase() + page.slice(1);
 
   return (
-    <div className="shell">
-      <aside className="sidebar">
-        <div
-          className="brand"
-          style={{ display: "flex", alignItems: "center", gap: "10px" }}
-        >
-          <img
-            src="favicon.svg"
-            alt="Logo"
-            style={{ width: "24px", height: "24px" }}
-          />
-          {APP_NAME}
-        </div>
-        <nav>
-          {NAV.map((item) =>
-            item.page ? (
+    <>
+      <a href="#main-content" className="skip-link button-sm">
+        Skip to content
+      </a>
+
+      <div className="nav-shell">
+        <header className="floating-nav">
+          <a href="#dashboard" className="brand title-3">
+            <img src="favicon.svg" alt="AirGuard logo" />
+            <span>{APP_NAME}</span>
+          </a>
+
+          <nav className="nav-links" aria-label="Primary">
+            {NAV.map((item) => (
               <a
-                key={item.label}
+                key={item.page}
                 href={`#${item.page}`}
-                className={`nav-item${item.page === page ? " is-active" : ""}`}
+                className={`nav-item title-4${item.page === page ? " is-active" : ""}`}
                 aria-current={item.page === page ? "page" : undefined}
               >
                 {item.label}
               </a>
-            ) : (
-              <span
-                key={item.label}
-                className="nav-item is-soon"
-                title="Coming soon"
-              >
-                {item.label}
-              </span>
-            ),
-          )}
-        </nav>
-      </aside>
+            ))}
+          </nav>
 
-      <div className="stage">
-        <header className="topbar">
-          <h1>{pageTitle}</h1>
-          <div className="topbar-right">
-            <span className="device-id">{DEVICE_ID}</span>
+          <div className="nav-actions">
+            <span className="device-id caption-4 mono">{DEVICE_ID}</span>
+
             <button
-              className="theme-toggle"
+              type="button"
+              className="theme-toggle button-sm"
               onClick={toggleTheme}
-              aria-label="Toggle theme"
+              aria-label="Toggle color theme"
             >
-              <div className="celestial-viewport">
+              <span className="celestial-viewport" aria-hidden="true">
                 <svg
                   className="theme-icon sun"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 256 256"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="20"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <circle cx="12" cy="12" r="4"></circle>
-                  <path d="M12 2v2"></path>
-                  <path d="M12 20v2"></path>
-                  <path d="m4.93 4.93 1.41 1.41"></path>
-                  <path d="m17.66 17.66 1.41 1.41"></path>
-                  <path d="M2 12h2"></path>
-                  <path d="M20 12h2"></path>
-                  <path d="m6.34 17.66-1.41 1.41"></path>
-                  <path d="m19.07 4.93-1.41 1.41"></path>
+                  <circle cx="128" cy="128" r="56" />
+                  <line x1="128" y1="36" x2="128" y2="16" />
+                  <line x1="62.9" y1="62.9" x2="48.8" y2="48.8" />
+                  <line x1="36" y1="128" x2="16" y2="128" />
+                  <line x1="62.9" y1="193.1" x2="48.8" y2="207.2" />
+                  <line x1="128" y1="220" x2="128" y2="240" />
+                  <line x1="193.1" y1="193.1" x2="207.2" y2="207.2" />
+                  <line x1="220" y1="128" x2="240" y2="128" />
+                  <line x1="193.1" y1="62.9" x2="207.2" y2="48.8" />
                 </svg>
-
                 <svg
                   className="theme-icon moon"
-                  viewBox="0 0 24 24"
+                  viewBox="0 0 256 256"
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="20"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 >
-                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+                  <path d="M216.7,152.6A91.9,91.9,0,0,1,103.4,39.3h0A92,92,0,1,0,216.7,152.6Z" />
                 </svg>
-              </div>
-              <span>{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
+              </span>
+              <span className="theme-label">
+                {theme === "dark" ? "Dark mode" : "Light mode"}
+              </span>
             </button>
-            <span className={`badge badge-${badge.tone}`}>{badge.text}</span>
+
+            <button
+              type="button"
+              className="menu-toggle"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span className="menu-lines" aria-hidden="true">
+                <span />
+                <span />
+              </span>
+            </button>
           </div>
         </header>
+      </div>
+
+      <nav
+        className={`mobile-menu${menuOpen ? " is-open" : ""}`}
+        aria-label="Mobile navigation"
+        aria-hidden={!menuOpen}
+      >
+        {NAV.map((item, index) => (
+          <a
+            key={item.page}
+            href={`#${item.page}`}
+            className={`mobile-menu-link heading-3${item.page === page ? " is-active" : ""}`}
+            style={{ transitionDelay: menuOpen ? `${index * 60}ms` : "0ms" }}
+            aria-current={item.page === page ? "page" : undefined}
+            tabIndex={menuOpen ? 0 : -1}
+            onClick={() => setMenuOpen(false)}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <div className="stage">
+        <div className="page-header">
+          <h1 className="heading-4">{pageTitle}</h1>
+          <div className="page-header-meta">
+            <span className={`badge badge-${badge.tone} caption-3`}>
+              <span className={`dot dot-${badge.tone}`} aria-hidden="true" />
+              {badge.text}
+            </span>
+          </div>
+        </div>
+
         {page === "alerts" && <Alerts />}
         {page === "devices" && (
           <Devices
@@ -168,6 +205,6 @@ export default function App() {
         )}
         {page === "dashboard" && <Dashboard {...latest} />}
       </div>
-    </div>
+    </>
   );
 }
